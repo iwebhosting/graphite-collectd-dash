@@ -1,4 +1,5 @@
 from flask import g
+from collections import defaultdict
 
 def cpu(path, period):
     args = {}
@@ -22,20 +23,23 @@ def df(path, period):
         )
     return res
 
-PLUGINS = {
+def have_a_go(path, period):
+    args = {}
+    targets = ['{}.*.*'.format(path),]
+    return [g.graphite.get_graph_url(targets=targets, args=args, period=period)]
+
+PLUGINS = defaultdict(lambda:  have_a_go)
+
+PLUGINS.update({
     'cpu': cpu,
     'df': df,
-}
+})
 
 def find_plugin(path):
     return path.split('.')[-1].split('-')[0]
 
 def find_instance(path):
     return path.split('-')[-1]
-
-def can_render(path):
-    plugin = find_plugin(path)
-    return plugin in PLUGINS
 
 def get_render_urls(path, period='month'):
     plugin = find_plugin(path)

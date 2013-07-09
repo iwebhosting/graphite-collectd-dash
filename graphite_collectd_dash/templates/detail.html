@@ -13,12 +13,10 @@
     <h2>{{ hostname }}</h2>
 
     {% for s in services %}
-        {% if can_render(s) %}
-            <h3>{{ s }}</h3>
-            {% for url in get_render_urls(s, period) %}
-                <img src="{{ url }}" />
-            {% endfor %}
-        {% endif %}
+        <h3>{{ s }}</h3>
+        {% for url in get_render_urls(s, period) %}
+            <img src="{{ url }}" />
+        {% endfor %}
     {% endfor %}
 </html>
 
