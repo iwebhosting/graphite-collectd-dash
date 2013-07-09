@@ -65,6 +65,7 @@ class Graphite(object):
     def get_graph_url(self, targets, args, period='month'):
         d = basic_graph.copy()
         d['from'] = periods[period]
+        d.update(args)
         args = d.items()
         args = args + [('target', target) for target in targets]
         return self._make_url('render', args=args)
