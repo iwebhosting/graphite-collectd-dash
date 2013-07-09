@@ -1,0 +1,24 @@
+<html>
+    <h2>Period<h2>
+        {% for p in ('hour', 'day', 'week', 'month', 'year') %}
+            {% if p == period %}
+                {{ p }}
+            {% else %}
+                <a href='?period={{ p }}'>{{ p }}</a>
+            {% endif %}
+        {% endfor %}
+
+
+    <h1>Graphs</h1>
+    <h2>{{ hostname }}</h2>
+
+    {% for s in services %}
+        {% if can_render(s) %}
+            <h3>{{ s }}</h3>
+            {% for url in get_render_urls(s, period) %}
+                <img src="{{ url }}" />
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+</html>
+

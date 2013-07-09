@@ -1,5 +1,6 @@
-from flask import Blueprint, Flask, g, current_app
+from flask import Blueprint, Flask, g, current_app, render_template, request
 from graphite import Graphite
+from render import can_render, get_render_urls
 
 gcd = Blueprint('gcd', __name__)
 
@@ -10,18 +11,20 @@ def setup_api():
 @gcd.route('/')
 def browse_hosts():
     hosts = g.graphite.get_nodes()
-    return ','.join(hosts)
+    return render_template('hosts.html', hosts=hosts)
 
 @gcd.route('/host/<hostname>')
 def host_detail(hostname):
-    services = g.graphite.get_children(hostname + '.*')
-    return ','.join(services)
-
+    p = request.args.get('period', 'month')
+    s = g.graphite.get_children(hostname + '.*')
+    return render_template('detail.html', hostname=hostname, period=p, services=s)
 
 def create_app():
     app = Flask(__name__)
     app.register_blueprint(gcd)
     app.config['GRAPHITE_URL'] = 'http://collect2.manc.iws-hosting.co.uk/'
+    app.jinja_env.globals.update(can_render=can_render)
+    app.jinja_env.globals.update(get_render_urls=get_render_urls)
     return app
 
 if __name__ == '__main__':
