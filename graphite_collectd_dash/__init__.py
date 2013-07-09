@@ -26,6 +26,7 @@ def create_app():
     app.jinja_env.globals.update(get_render_urls=get_render_urls)
     return app
 
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
     app.run(debug=True)
