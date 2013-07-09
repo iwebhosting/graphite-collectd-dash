@@ -7,11 +7,11 @@ periods = {
     'day': '-24hours',
     'week': '-7days',
     'month': '-30days',
-    'year': '-365days',
+    'year': '-12months',
 }
 
 basic_graph = {
-    'width': 800,
+    'width': 1000,
     'until': 'now',
     'height': 250,
     'fontName': 'Sans',

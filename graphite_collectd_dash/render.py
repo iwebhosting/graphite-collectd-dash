@@ -25,6 +25,8 @@ def df(path, period):
 
 def have_a_go(path, period):
     args = {}
+    children = g.graphite.get_children(path + '.*.*')
+    args['height'] = 250 + (10 * len(children))
     targets = ['{}.*.*'.format(path),]
     return [g.graphite.get_graph_url(targets=targets, args=args, period=period)]
 
