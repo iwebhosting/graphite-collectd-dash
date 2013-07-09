@@ -1,6 +1,7 @@
 from flask import Blueprint, Flask, g, current_app, render_template, request
 from graphite import Graphite
 from render import get_render_urls
+import os
 
 gcd = Blueprint('gcd', __name__)
 
@@ -22,7 +23,9 @@ def host_detail(hostname):
 def create_app():
     app = Flask(__name__)
     app.register_blueprint(gcd)
-    app.config['GRAPHITE_URL'] = 'http://collect2.manc.iws-hosting.co.uk/'
+    app.config['GRAPHITE_URL'] = os.environ.get('GRAPHITE_URL')
+    if app.config['GRAPHITE_URL'] is None:
+        raise RuntimeError('GRAPHITE_URL env must be set')
     app.jinja_env.globals.update(get_render_urls=get_render_urls)
     return app
 
