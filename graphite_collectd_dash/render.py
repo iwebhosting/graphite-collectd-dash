@@ -1,8 +1,12 @@
 from flask import g
 
 def cpu(path, period):
-    urls = []
-    return urls
+    args = {}
+    args['title'] = 'CPU Usage'
+    args['areaMode'] = 'stacked'
+    args['max'] = '100'
+    targets = ['{}.*.value'.format(path),]
+    return [g.graphite.get_graph_url(targets=targets, args=args, period=period)]
 
 PLUGINS = {
     'cpu': cpu,
