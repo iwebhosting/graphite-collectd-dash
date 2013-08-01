@@ -20,6 +20,12 @@ def host_detail(hostname):
     s = g.graphite.get_children(hostname + '.*')
     return render_template('detail.html', hostname=hostname, period=p, services=s)
 
+@gcd.route('/host/<hostname>/<graph>')
+def host_graph_detail(hostname, graph):
+    p = request.args.get('period', 'month')
+    s = g.graphite.get_children(hostname + '.' + graph)
+    return render_template('detail.html', hostname=hostname, period=p, services=s)
+
 def create_app():
     app = Flask(__name__)
     app.register_blueprint(gcd)
