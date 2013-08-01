@@ -23,6 +23,22 @@ def df(path, period):
         )
     return res
 
+def interface(path, period):
+    args = {}
+    children = g.graphite.get_children(path + '.*')
+    args['height'] = 250 + (10 * len(children))
+    targets = []
+    res = []
+    for child in children:
+        if 'octet' not in child: continue
+        dev = child.split('.')[-1].split('-')[1]
+        targets = []
+        for i in ['tx', 'rx']:
+            targets += ["cactiStyle(alias(scale({}.{}, 0.000008), '{} {}'))".format(child, i, dev, i),]
+            targets += ["cactiStyle(alias(nPercentile(scale(summarize(sum({}.{}), '5min', 'max'), 0.000008), 95), '{} {} 95th'))".format(child, i, dev, i),]
+        res.append(g.graphite.get_graph_url(targets=targets, args=args, period=period))
+    return res
+
 def have_a_go(path, period):
     args = {}
     children = g.graphite.get_children(path + '.*.*')
@@ -35,6 +51,7 @@ PLUGINS = defaultdict(lambda:  have_a_go)
 PLUGINS.update({
     'cpu': cpu,
     'df': df,
+    'interface': interface,
 })
 
 def find_plugin(path):
