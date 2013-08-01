@@ -31,6 +31,7 @@ def interface(path, period):
     res = []
     for child in children:
         if 'octet' not in child: continue
+        if 'eth' not in child: continue
         dev = child.split('.')[-1].split('-')[1]
         targets = []
         for i in ['tx', 'rx']:
