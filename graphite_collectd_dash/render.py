@@ -32,7 +32,7 @@ def interface(path, period):
     for child in children:
         if 'octet' not in child: continue
         if 'eth' not in child: continue
-        dev = child.split('.')[-1].split('-')[1]
+        dev = child.split('.')[3].split('-')[1]
         targets = []
         for i in ['tx', 'rx']:
             targets += ["cactiStyle(alias(scale({}.{}, 0.000008), '{} {}'))".format(child, i, dev, i),]

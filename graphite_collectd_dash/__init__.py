@@ -34,7 +34,7 @@ def host_graph_detail(hostname, graph):
     s = []
     for machine in [machine for machine in all_machines if r.search(machine)]:
         ss = g.graphite.get_children(machine + '.*')
-        s += [x for x in ss if gr.search(x.split('.')[-1])]
+        s += [x for x in ss if gr.search(x.split('.')[2])]
     return render_template('detail.html', hostname=hostname, period=p, services=s)
 
 def create_app():
