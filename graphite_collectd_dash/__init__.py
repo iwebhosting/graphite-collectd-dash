@@ -2,6 +2,7 @@ from flask import Blueprint, Flask, g, current_app, render_template, request
 from graphite import Graphite
 from render import get_render_urls
 import os
+import re
 
 gcd = Blueprint('gcd', __name__)
 
@@ -17,13 +18,23 @@ def browse_hosts():
 @gcd.route('/host/<hostname>')
 def host_detail(hostname):
     p = request.args.get('period', 'month')
-    s = g.graphite.get_children(hostname + '.*')
+    all_machines = g.graphite.get_children('*')
+    r = re.compile(hostname)
+    s = []
+    for machine in [machine for machine in all_machines if r.search(machine)]:
+        s += g.graphite.get_children(machine + '.*')
     return render_template('detail.html', hostname=hostname, period=p, services=s)
 
 @gcd.route('/host/<hostname>/<graph>')
 def host_graph_detail(hostname, graph):
     p = request.args.get('period', 'month')
-    s = g.graphite.get_children(hostname + '.' + graph)
+    all_machines = g.graphite.get_children('*')
+    r = re.compile(hostname)
+    gr = re.compile(graph)
+    s = []
+    for machine in [machine for machine in all_machines if r.search(machine)]:
+        ss = g.graphite.get_children(machine + '.*')
+        s += [x for x in ss if gr.search(x.split('.')[-1])]
     return render_template('detail.html', hostname=hostname, period=p, services=s)
 
 def create_app():
